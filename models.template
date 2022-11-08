@@ -1,0 +1,14 @@
+from flask import SQLAlchemy
+
+db = SQLAlchemy()
+
+class {{entity.name}}(db.Model):
+    id = db.Column("{{entity.name}}_id", db.Integer, primary_key=True)
+{% for property in entity.properties %}
+    producto_{{property.name}} = db.Column(db.{{property.type|pytype}})
+{% endfor %}
+
+    def __init__(self, datos):
+    {% for property in entity.properties %}
+        self.producto_{{property.name}} = datos["{{property.name}}"]
+    {% endfor %}

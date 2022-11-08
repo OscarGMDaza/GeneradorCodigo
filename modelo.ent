@@ -1,0 +1,10 @@
+entity domicilio {
+  direccion : string
+  codproducto1 : string
+  codproducto2 : integer
+  codproducto3 : integer
+  codproducto4 : integer
+  codproducto5 : integer
+  codmetpago : integer
+  valortotal : integer
+} 

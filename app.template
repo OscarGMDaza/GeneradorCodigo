@@ -1,0 +1,62 @@
+from flask import redirect
+
+from config_app import create_app, db
+from models{{entity.name}} import {{entity.name}}
+
+app = create_app()
+
+@app.route("/")
+def listar():
+    data = {{entity.name}}.query.all()
+    diccionario_{{entity.name}} = {}
+    for d in data:
+        p = {
+            "id": d.id,
+        {% for property in entity.properties %}
+            "{{property.name}}": d.producto_{{property.name}},
+        {% endfor %}
+        }
+        diccionario_{{entity.name}}[d.id] = p
+    return diccionario_{{entity.name}}
+
+@app.route("/agregar/<nombre>/<int:cantidad>/<int:valor>")
+def agregar(nombre, cantidad, valor):
+    datos = {
+    {% for property in entity.properties %}
+        "{{property.name}}": {{property.name}},
+    {% endfor %}
+    }
+    p = {{entity.name}}(datos)
+    db.session.add(p)
+    db.session.commit()
+    return redirect("/{{entity.name}}/")
+
+@app.route("/eliminar/<int:id>")
+def eliminar(id):
+    p = {{entity.name}}.query.filter_by(id=id).first()
+    db.session.delete(p)
+    db.session.commit()
+    return redirect("/{{entity.name}}/")
+
+@app.route("/editar/<int:id>/<nombre>/<int:cantidad>/<int:valor>")
+def editar(id, nombre, cantidad, valor):
+    p = {{entity.name}}.query.filter_by(id=id).first()
+{% for property in entity.properties %}
+    p.producto_{{property.name}} = {{property.name}}
+{% endfor %}
+    db.session.commit()
+    return redirect("/{{entity.name}}/")
+
+@app.route("/buscar/<int:id>")
+def buscar(id):
+    p = {{entity.name}}.query.filter_by(id=id).first()
+    datos = {
+        "id": p.id,
+    {% for property in entity.properties %}
+        "{{property.name}}": p.producto_{{property.name}},
+    {% endfor %}
+    }
+    return datos
+
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0")
